@@ -1,14 +1,13 @@
 from pydantic import BaseModel
-from datetime import datetime
 
-class CreateUser(BaseModel):
+class UserCreateDTO(BaseModel):
     username: str
     email: str
     first_name: str
     last_name: str
     password: str
 
-class User(BaseModel):
+class UserResponseDTO(BaseModel):
     id: int
     username: str
     email: str

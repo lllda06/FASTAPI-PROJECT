@@ -1,12 +1,12 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-class CreateEvent(BaseModel):
+class CreateEventDTO(BaseModel):
     title: str
     description: str
     meeting_time: datetime
 
-class Event(BaseModel):
+class EventResponseDTO(BaseModel):
     id: int
     title: str
     description: str
