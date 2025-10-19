@@ -1,15 +1,11 @@
 from fastapi import FastAPI
-from app.database.db_connection import Base, engine
-from app.routers import users, events
-from depends import get_db
+from app.routers.events import router as events_router
+from app.routers.users import router as users_router
+from app.database.session import Base, engine
 
+app = FastAPI(title="Мероприятия & Пользователи")
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="События, подписки и пользователи!")
 
-app.include_router(users.router)
-app.include_router(events.router)
-
-@app.get("/")
-def root():
-    return {"message": "FastAPI c событиями, подписками на них и пользователями по интересам!"}
+app.include_router(events_router)
+app.include_router(users_router)

@@ -1,21 +1,23 @@
-from fastapi import APIRouter, Depends, HTTPException
-from app.schemas.user import CreateUser, User
-from app.dto.user_dto import UserCreateDTO, UserResponseDTO
-from app.services.user_service import register_user, get_users, get_user
-from depends import get_db
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
+from app.depends import get_db
+from app.handlers.user_handler import UsersHandler
+from app.schemas.user_schema import SchemaUser, SchemaCreateUser
 
-router = APIRouter()
 
-@router.post("/api/users", response_model=UserResponseDTO)
-async def create_user(user: UserCreateDTO, db: Session = Depends(get_db)):
-    return await register_user(user, db)
+router = APIRouter(prefix="/api/users", tags=["users"])
 
-@router.get("/api/users", response_model=list[UserResponseDTO])
-async def get_users_list(db: Session = Depends(get_db)):
-    users = await get_users(db)
-    return users
 
-@router.get("/api/users/{user_id}", response_model=UserResponseDTO)
-async def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
-    return await get_user(user_id, db)
+@router.get("", response_model=list[SchemaUser])
+def list_users(skip: int = Query(0, ge=0), limit: int = Query(100, gt=0, le=500), db: Session = Depends(get_db)):
+    return UsersHandler(db).list(skip, limit)
+
+
+@router.get("/{user_id}", response_model=SchemaUser)
+def get_user(user_id: int, db: Session = Depends(get_db)):
+    return UsersHandler(db).get(user_id)
+
+
+@router.post("", response_model=SchemaUser, status_code=201)
+def create_user(payload: SchemaCreateUser, db: Session = Depends(get_db)):
+    return UsersHandler(db).create(payload)

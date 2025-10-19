@@ -1,13 +1,17 @@
 from sqlalchemy.orm import Session
-from app.dto.event_dto import EventResponseDTO, CreateEventDTO
-from app.schemas.event import Event, CreateEvent
+from app.dto.event_dto import CreateEventDTO, EventDTO
+from app.repositories.event_repository import EventRepository
 
-def create_event(event_data: CreateEvent, db: Session):
-    db_event = EventModel(title=event_data.title, description=event_data.description, meeting_time=event_data.meeting_time)
-    db.add(db_event)
-    db.commit()
-    db.refresh(db_event)
-    return Event.from_orm(db_event)
+class EventService:
+    def __init__(self, repo: EventRepository) -> None:
+        self.repo = repo
 
-def get_events(db: Session):
-    return db.query(Event).all()
+    @classmethod
+    def from_session(cls, db: Session) -> "EventService":
+        return cls(EventRepository(db))
+
+    def list_events(self, skip:int=0, limit:int=100) -> list[EventDTO]:
+        return self.repo.list(skip=skip, limit=limit)
+
+    def create_event(self, data: CreateEventDTO) -> EventDTO:
+        return self.repo.create(data)

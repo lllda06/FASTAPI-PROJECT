@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 from datetime import datetime
 
-class CreateEvent(BaseModel):
+class SchemaCreateEvent(BaseModel):
     title: str
-    description: str
+    description: str | None = None
     meeting_time: datetime
 
-class Event(BaseModel):
+class SchemaEvent(BaseModel):
     id: int
     title: str
-    description: str
+    description: str | None = None
     meeting_time: datetime
 
     class Config:
