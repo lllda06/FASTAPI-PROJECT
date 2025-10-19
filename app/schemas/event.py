@@ -13,4 +13,4 @@ class Event(BaseModel):
     meeting_time: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True

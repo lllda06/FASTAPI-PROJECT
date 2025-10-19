@@ -2,6 +2,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
+from settings import settings
+
 # Подключение к БД
 SQLALCHEMY_DATABASE_URL = "sqlite:///./event.db"
 
